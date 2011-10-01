@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/icons" >
+        <file alias="app" >icons/app.png</file>
+        <file alias="removenote" >icons/removenote.png</file>
+        <file alias="addkeywords" >icons/addkeywords.png</file>
+        <file alias="addnote" >icons/addnote.png</file>
+        <file alias="cancel" >icons/cancel.png</file>
+        <file alias="editnote" >icons/editnote.png</file>
+        <file alias="help" >icons/help.png</file>
+        <file alias="ok" >icons/ok.png</file>
+        <file alias="removekeywords" >icons/removekeywords.png</file>
+        <file alias="removeunused" >icons/removeunused.png</file>
+        <file alias="buttonaddkeywords" >icons/buttonaddkeywords.png</file>
+        <file alias="buttonremovekeywords" >icons/buttonremovekeywords.png</file>
+    </qresource>
+</RCC>
