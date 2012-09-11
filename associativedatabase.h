@@ -17,6 +17,7 @@ class AssociativeDatabase : public QObject
 	QHash<int,QSet<int> > _extracts;
 	QString _lastError;
 	double _version;
+	bool _modified;
 public:
     AssociativeDatabase();
 

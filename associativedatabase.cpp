@@ -12,12 +12,15 @@ AssociativeDatabase* AssociativeDatabase::db()
 
 //--------------------------------- methods ------------------------------------
 AssociativeDatabase::AssociativeDatabase()
-		: QObject()
+		: QObject(), _modified(false)
 {
 }
 
 bool AssociativeDatabase::save(const QString &fileName)
 {
+	if(!_modified)
+		return true;
+
 	//open file
 	QFile file(fileName);
 	if(!file.open(QFile::WriteOnly))
@@ -66,6 +69,7 @@ bool AssociativeDatabase::load(const QString &fileName)
 		in.setVersion(dataStreamVersion);
 		in>>_keywords>>_notes>>_links;
 
+		_modified = false;
 		return true;
 	}
 	return true; //if not exists
@@ -220,6 +224,7 @@ int AssociativeDatabase::addNewKeyword(const QString &text)
 	//add extractsKey
 	maxKey++; //first free
 	_keywords[maxKey]=text;
+	_modified = true;
 
 	return maxKey;
 }
@@ -234,6 +239,7 @@ void AssociativeDatabase::removeUnusedKeywords()
 		if(!values.contains(key))
 		{
 			_keywords.remove(key);
+			_modified = true;
 
 			//remove from working extracts
 			QList<int> extractsKeys=_extracts.keys();
@@ -280,6 +286,7 @@ bool AssociativeDatabase::removeNote(int note)
 	//remove
 	_notes.remove(note);
 	_links.remove(note);
+	_modified = true;
 	return true;
 }
 
@@ -296,6 +303,7 @@ int AssociativeDatabase::addNewNote(const QString &newTitle,
 	//add extractsKey
 	maxKey++; //first free
 	_notes[maxKey]=qMakePair(newTitle,newText);
+	_modified = true;
 
 	return maxKey;
 }
@@ -339,6 +347,7 @@ bool AssociativeDatabase::setTitle(int note,const QString &newTitle)
 
 	//do
 	_notes[note].first=newTitle;
+	_modified = true;
 	return true;
 }
 
@@ -353,6 +362,7 @@ bool AssociativeDatabase::setText(int note,const QString &newText)
 
 	//do
 	_notes[note].second=newText;
+	_modified = true;
 	return true;
 }
 
@@ -393,6 +403,7 @@ bool AssociativeDatabase::setNoteAssociationFromExtracts(int note,
 
 	//do
 	_links.remove(note);
+	_modified = true;
 	foreach(int key,_extracts[extractsKey])
 		_links.insert(note,key);
 	return true;
