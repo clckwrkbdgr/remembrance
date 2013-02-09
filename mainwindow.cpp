@@ -71,8 +71,12 @@ MainWindow::MainWindow(QWidget *parent)
 		this,SLOT(allKeywordsDoubleClick(const QModelIndex &)));
 
 	modelFoundNotes=new QStringListModel;
+	proxyFoundNotes = new QSortFilterProxyModel;
+	proxyFoundNotes->setDynamicSortFilter(true);
+	proxyFoundNotes->sort(0);
+	proxyFoundNotes->setSourceModel(modelFoundNotes);
 	listFoundNotes=new QListView;
-	listFoundNotes->setModel(modelFoundNotes);
+	listFoundNotes->setModel(proxyFoundNotes);
 	listFoundNotes->setSelectionMode(
 				QAbstractItemView::SingleSelection);
 	listFoundNotes->setEditTriggers(QListView::NoEditTriggers);
@@ -358,7 +362,7 @@ void MainWindow::noteDoubleClick(const QModelIndex &index)
 	//repaint
 	int lastIndex=index.row();
 	repaintList();
-	listFoundNotes->setCurrentIndex(modelFoundNotes->index(lastIndex,0));
+	listFoundNotes->setCurrentIndex(proxyFoundNotes->mapFromSource(modelFoundNotes->index(lastIndex,0)));
 }
 
 void MainWindow::addKeywords()
@@ -408,14 +412,14 @@ void MainWindow::removeKeywords()
 
 void MainWindow::editNote()
 {
-	noteDoubleClick(listFoundNotes->currentIndex());
+	noteDoubleClick(proxyFoundNotes->mapToSource(listFoundNotes->currentIndex()));
 }
 
 void MainWindow::removeNote()
 {
 	//get selected note
 	int selectedNote=keysForModelFoundNotes.value(
-			listFoundNotes->currentIndex().row());
+			proxyFoundNotes->mapToSource(listFoundNotes->currentIndex()).row());
 
 	//dialog
 	if(QMessageBox::question(this,tr("Note removing"),tr("Are you sure want to "
@@ -428,9 +432,9 @@ void MainWindow::removeNote()
 	}
 
 	//repaint
-	int lastIndex=listFoundNotes->currentIndex().row();
+	int lastIndex=proxyFoundNotes->mapToSource(listFoundNotes->currentIndex()).row();
 	repaintList();
-	listFoundNotes->setCurrentIndex(modelFoundNotes->index(lastIndex,0));
+	listFoundNotes->setCurrentIndex(proxyFoundNotes->mapFromSource(modelFoundNotes->index(lastIndex,0)));
 }
 
 void MainWindow::addNote()
