@@ -10,6 +10,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QStringListModel>
+#include <QSortFilterProxyModel>
 #include <QtDebug>
 #include <QBitmap>
 #include <QToolButton>
@@ -52,8 +53,12 @@ MainWindow::MainWindow(QWidget *parent)
 		this,SLOT(chosenKeywordsDoubleClick(const QModelIndex &)));
 
 	modelAllKeywords=new QStringListModel;
+	proxyAllKeywords = new QSortFilterProxyModel;
+	proxyAllKeywords->setDynamicSortFilter(true);
+	proxyAllKeywords->sort(0);
+	proxyAllKeywords->setSourceModel(modelAllKeywords);
 	listAllKeywords=new QListView;
-	listAllKeywords->setModel(modelAllKeywords);
+	listAllKeywords->setModel(proxyAllKeywords);
 	listAllKeywords->setSelectionMode(
 			QAbstractItemView::ExtendedSelection);
 	listAllKeywords->setEditTriggers(QListView::NoEditTriggers);
@@ -137,7 +142,7 @@ void MainWindow::search(const QString &text)
 	int index=keysForModelAllKeywords.indexOf(key);
 	if(index<0) return;
 
-	listAllKeywords->setCurrentIndex(modelAllKeywords->index(index,0));
+	listAllKeywords->setCurrentIndex(proxyAllKeywords->mapFromSource(modelAllKeywords->index(index,0)));
 }
 
 MainWindow::~MainWindow()
@@ -298,8 +303,12 @@ QSet<int> MainWindow::selectionForChosen()
 
 QSet<int> MainWindow::selectionForAll()
 {
-	QModelIndexList list=listAllKeywords->selectionModel()->
+	QModelIndexList sourceList=listAllKeywords->selectionModel()->
 						 selectedIndexes();
+	QModelIndexList list;
+	foreach(const QModelIndex & index, sourceList) {
+		list << proxyAllKeywords->mapToSource(index);
+	}
 
 	QSet<int> result;
 	foreach(QModelIndex index,list)

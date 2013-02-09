@@ -8,6 +8,7 @@
 #include "associativedatabase.h"
 
 class QStringListModel;
+class QSortFilterProxyModel;
 class QListView;
 class QItemSelection;
 class QModelIndex;
@@ -28,6 +29,7 @@ class MainWindow : public QMainWindow
 	QList<int> keysForModelChosenKeywords,keysForModelFoundNotes,
 		keysForModelAllKeywords;
 	QStringListModel *modelChosenKeywords,*modelFoundNotes,*modelAllKeywords;
+	QSortFilterProxyModel *proxyChosenKeywords,*proxyFoundNotes,*proxyAllKeywords;
 	QListView *listChosenKeywords,*listFoundNotes,*listAllKeywords;
 
 	QLineEdit *editSearch;
