@@ -261,8 +261,10 @@ QSet<int> AssociativeDatabase::getNotesByKeywords(int extractsKey)
 	}
 
 	QSet<int> result;
-	if(_extracts[extractsKey].isEmpty())
-		return result; //for empty request there is empty result
+	if(_extracts[extractsKey].isEmpty()) {
+		return _links.keys().toSet();
+		//return result; //for empty request there is empty result
+	}
 
 	QList<int> keys=_links.keys();
 	foreach(int key,keys)
