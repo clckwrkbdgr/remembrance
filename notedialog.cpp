@@ -1,3 +1,4 @@
+#include <QtDebug>
 #include <QPushButton>
 #include <QListView>
 #include <QLineEdit>
@@ -14,11 +15,9 @@
 #include "notedialog.h"
 
 NoteDialog::NoteDialog(QWidget *parent)
-		: QDialog(parent)
+	: QDialog(parent)
 {
-	setWindowFlags(windowFlags() | Qt::CustomizeWindowHint);
-	setWindowFlags(windowFlags() | Qt::WindowSystemMenuHint);
-	setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
+	setWindowFlags((windowFlags() ^ Qt::Dialog) | Qt::Window | Qt::CustomizeWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMaximizeButtonHint);
 	_associations=-1;
 	setWindowTitle(tr("Note"));
 
