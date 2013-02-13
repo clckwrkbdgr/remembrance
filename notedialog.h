@@ -26,7 +26,7 @@ class NoteDialog : public QDialog
 	QLineEdit *editTitle;
 	QTextEdit *editNote;
 
-	QPushButton *buttonColor;
+	QPushButton *buttonColor, *buttonFont;
 
 	QPushButton *buttonClose,*buttonSave;
 
@@ -39,6 +39,7 @@ private slots:
 	void changeSelection(const QItemSelection &selected,
 						  const QItemSelection &deselected);
 	void setColor();
+	void setFont();
 public:
     NoteDialog(QWidget *parent=0);
     ~NoteDialog();

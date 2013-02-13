@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QStringListModel>
 #include <QColorDialog>
+#include <QtGui/QFontDialog>
 
 #include "keywordslistdialog.h"
 #include "notedialog.h"
@@ -56,6 +57,9 @@ NoteDialog::NoteDialog(QWidget *parent)
 	buttonColor=new QPushButton(tr("Set color..."));
 	connect(buttonColor,SIGNAL(clicked()), this,SLOT(setColor()));
 
+	buttonFont=new QPushButton(tr("Set font..."));
+	connect(buttonFont,SIGNAL(clicked()), this,SLOT(setFont()));
+
 	//layout
 	QVBoxLayout *vboxMain=new QVBoxLayout;
 		QSplitter *hboxMain=new QSplitter;
@@ -78,6 +82,7 @@ NoteDialog::NoteDialog(QWidget *parent)
 			vboxText->addWidget(new QLabel(tr("Text of note:")));
 			vboxText->addWidget(editNote);
 			vboxText->addWidget(buttonColor);
+			vboxText->addWidget(buttonFont);
 			vboxText->setContentsMargins(0,0,0,0);
 			frameText->setLayout(vboxText);
 		hboxMain->addWidget(frameText);
@@ -95,6 +100,18 @@ NoteDialog::NoteDialog(QWidget *parent)
 NoteDialog::~NoteDialog()
 {
 	aDB->removeExtracts(_associations);
+}
+
+void NoteDialog::setFont()
+{
+	bool ok = false;
+	QFont newFont=QFontDialog::getFont(&ok, editNote->currentFont(),this);
+	if(ok)
+		editNote->setCurrentFont(newFont);
+
+	QTextCursor tc=editNote->textCursor();
+	tc.clearSelection();
+	editNote->setTextCursor(tc);
 }
 
 void NoteDialog::setColor()
