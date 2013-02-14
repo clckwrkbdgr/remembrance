@@ -90,10 +90,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 	buttonAddKeywords=new QToolButton;
 	buttonAddKeywords->setDefaultAction(actionAddKeywords);
-	buttonAddKeywords->setAutoRaise(true);
 	buttonRemoveKeywords=new QToolButton;
 	buttonRemoveKeywords->setDefaultAction(actionRemoveKeywords);
-	buttonRemoveKeywords->setAutoRaise(true);
 
 	editSearch=new QLineEdit;
 	connect(editSearch,SIGNAL(textChanged(const QString&)),
