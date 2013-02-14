@@ -11,6 +11,8 @@
 #include <QStringListModel>
 #include <QColorDialog>
 #include <QtGui/QFontDialog>
+#include <QtGui/QApplication>
+#include <QtGui/QDesktopWidget>
 
 #include "keywordslistdialog.h"
 #include "notedialog.h"
@@ -95,6 +97,11 @@ NoteDialog::NoteDialog(QWidget *parent)
 		hboxButtons->addStretch(1);
 	vboxMain->addLayout(hboxButtons);
 	setLayout(vboxMain);
+
+	QRect g = geometry();
+	g.setWidth(QApplication::desktop()->width());
+	g.setLeft(QApplication::desktop()->rect().left());
+	setGeometry(g);
 }
 
 NoteDialog::~NoteDialog()
