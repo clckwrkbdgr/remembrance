@@ -9,6 +9,7 @@
 class QStringListModel;
 class QListView;
 class QItemSelection;
+class QModelIndex;
 
 class KeywordListDialog : public QDialog
 {
@@ -27,6 +28,7 @@ class KeywordListDialog : public QDialog
 private slots:
 	void changeSelection(const QItemSelection &selected,
 						  const QItemSelection &deselected);
+	void pickSelectedItem(const QModelIndex & index);
 	void addKeyword();
 	void removeUnused();
 public:

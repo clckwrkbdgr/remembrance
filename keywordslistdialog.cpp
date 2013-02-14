@@ -21,6 +21,7 @@ KeywordListDialog::KeywordListDialog(QWidget *parent)
 	view->setModel(model);
 	view->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	view->setEditTriggers(QListView::NoEditTriggers);
+	connect(view, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(pickSelectedItem(QModelIndex)));
 
 	buttonAddKeyword=new QPushButton(QIcon(":/icons/addkeywords"),
 									 tr("Add keyword"));
@@ -65,6 +66,11 @@ KeywordListDialog::~KeywordListDialog()
 {
 	if(!aDB->removeExtracts(_allKeywords))
 		QMessageBox::warning(this,tr("Database error"),aDB->lastError());
+}
+
+void KeywordListDialog::pickSelectedItem(const QModelIndex &)
+{
+	accept();
 }
 
 void KeywordListDialog::repaintList()
