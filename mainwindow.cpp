@@ -332,7 +332,7 @@ void MainWindow::chosenKeywordsDoubleClick(const QModelIndex &index)
 void MainWindow::noteDoubleClick(const QModelIndex &index)
 {
 	//get selected note
-	int selectedNote=keysForModelFoundNotes.value(index.row());
+	int selectedNote=keysForModelFoundNotes.value(proxyFoundNotes->mapToSource(index).row());
 
 	//dialog
 	NoteDialog dialog(this);
@@ -358,7 +358,7 @@ void MainWindow::noteDoubleClick(const QModelIndex &index)
 		QMessageBox::warning(this,tr("Database error"),aDB->lastError());
 
 	//repaint
-	int lastIndex=index.row();
+	int lastIndex=proxyFoundNotes->mapToSource(index).row();
 	repaintList();
 	listFoundNotes->setCurrentIndex(proxyFoundNotes->mapFromSource(modelFoundNotes->index(lastIndex,0)));
 }
