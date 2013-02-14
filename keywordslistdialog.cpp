@@ -29,6 +29,8 @@ KeywordListDialog::KeywordListDialog(QWidget *parent)
 	buttonRemoveUnused=new QPushButton(QIcon(":/icons/removeunused"),
 									 tr("Remove unused"));
 	connect(buttonRemoveUnused,SIGNAL(clicked()), this,SLOT(removeUnused()));
+	buttonEditSelectedKeyword = new QPushButton(tr("Edit keyword"));
+	connect(buttonEditSelectedKeyword, SIGNAL(clicked()), this, SLOT(editSelectedKeyword()));
 
 	buttonPick=new QPushButton(QIcon(":/icons/ok"),tr("Pick"));
 	connect(buttonPick,SIGNAL(clicked()), this,SLOT(accept()));
@@ -46,6 +48,7 @@ KeywordListDialog::KeywordListDialog(QWidget *parent)
 	QVBoxLayout *vbox=new QVBoxLayout;
 	vbox->addWidget(buttonAddKeyword);
 	vbox->addWidget(buttonRemoveUnused);
+	vbox->addWidget(buttonEditSelectedKeyword);
 	vbox->addWidget(view);
 		QHBoxLayout *hbox=new QHBoxLayout;
 		hbox->addStretch(1);
@@ -119,6 +122,22 @@ void KeywordListDialog::addKeyword()
 	}
 }
 
+void KeywordListDialog::editSelectedKeyword()
+{
+	QModelIndexList list=view->selectionModel()->selectedIndexes();
+	if(list.count() != 1) {
+		return;
+	}
+	QModelIndex index = list.first();
+	QString text = model->data(index, Qt::EditRole).toString();
+	text = QInputDialog::getText(this, tr("Edit keyword"), tr("Enter new text:"), QLineEdit::Normal, text);
+	if(text.isEmpty()) {
+		return;
+	}
+	aDB->editKeyword(keysForModel.value(index.row()), text);
+	repaintList();
+}
+
 void KeywordListDialog::removeUnused()
 {
 	aDB->removeUnusedKeywords();
@@ -128,6 +147,6 @@ void KeywordListDialog::removeUnused()
 void KeywordListDialog::changeSelection(const QItemSelection &selected,
 						  const QItemSelection &deselected)
 {
-	buttonPick->setEnabled(
-			view->selectionModel()->selectedIndexes().count()>0);
+	buttonPick->setEnabled(view->selectionModel()->selectedIndexes().count() > 0);
+	buttonEditSelectedKeyword->setEnabled(view->selectionModel()->selectedIndexes().count() == 1);
 }

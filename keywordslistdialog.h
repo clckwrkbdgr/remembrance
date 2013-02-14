@@ -21,7 +21,7 @@ class KeywordListDialog : public QDialog
 	QStringListModel *model;
 	QListView *view;
 
-	QPushButton *buttonAddKeyword,*buttonRemoveUnused;
+	QPushButton *buttonAddKeyword,*buttonRemoveUnused, *buttonEditSelectedKeyword;
 	QPushButton *buttonPick,*buttonCancel;
 
 	void repaintList();
@@ -31,6 +31,7 @@ private slots:
 	void pickSelectedItem(const QModelIndex & index);
 	void addKeyword();
 	void removeUnused();
+	void editSelectedKeyword();
 public:
     KeywordListDialog(QWidget *parent=0);
     ~KeywordListDialog();

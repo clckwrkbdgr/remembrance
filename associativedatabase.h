@@ -40,6 +40,7 @@ public:
 	bool fillExtractsWithKeys(int extractsKey,const QSet<int> &keys);
 
 	int addNewKeyword(const QString &text);
+	void editKeyword(int keywordIndex, const QString & newText);
 	void removeUnusedKeywords();
 
 	//notes

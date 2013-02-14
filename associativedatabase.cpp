@@ -229,6 +229,14 @@ int AssociativeDatabase::addNewKeyword(const QString &text)
 	return maxKey;
 }
 
+void AssociativeDatabase::editKeyword(int keywordIndex, const QString & newText)
+{
+	if(!_keywords.keys().contains(keywordIndex)) {
+		return;
+	}
+	_keywords[keywordIndex] = newText;
+}
+
 void AssociativeDatabase::removeUnusedKeywords()
 {
 	QSet<int> keys=_keywords.keys().toSet();
