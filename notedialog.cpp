@@ -21,6 +21,7 @@ NoteDialog::NoteDialog(QWidget *parent)
 	: QDialog(parent)
 {
 	setWindowFlags((windowFlags() ^ Qt::Dialog) | Qt::Window | Qt::CustomizeWindowHint | Qt::WindowSystemMenuHint | Qt::WindowMaximizeButtonHint);
+	setWindowState(windowState() | Qt::WindowMaximized);
 	_associations=-1;
 	setWindowTitle(tr("Note"));
 
