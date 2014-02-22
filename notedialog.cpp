@@ -202,13 +202,13 @@ void NoteDialog::changeText()
 	setModified();
 }
 
-void NoteDialog::editText(const QString &text)
+void NoteDialog::editText(const QString &/*text*/)
 {
 	setModified();
 }
 
-void NoteDialog::changeSelection(const QItemSelection &selected,
-					  const QItemSelection &deselected)
+void NoteDialog::changeSelection(const QItemSelection &/*selected*/,
+					  const QItemSelection &/*deselected*/)
 {
 	buttonRemoveKeywords->setEnabled(
 			viewKeywords->selectionModel()->selectedIndexes().count()>0);

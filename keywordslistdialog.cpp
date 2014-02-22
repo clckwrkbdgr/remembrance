@@ -8,6 +8,7 @@
 #include <QStringListModel>
 
 #include "keywordslistdialog.h"
+#include <QtGui/QLabel>
 
 KeywordListDialog::KeywordListDialog(QWidget *parent)
 		: QDialog(parent)
@@ -38,6 +39,10 @@ KeywordListDialog::KeywordListDialog(QWidget *parent)
 	buttonCancel=new QPushButton(QIcon(":/icons/cancel"),tr("Cancel"));
 	connect(buttonCancel,SIGNAL(clicked()), this,SLOT(reject()));
 
+	editSearch=new QLineEdit;
+	connect(editSearch,SIGNAL(textChanged(const QString&)),
+			this,SLOT(search(const QString&)));
+
 	connect(view->selectionModel(),
 			SIGNAL(selectionChanged(const QItemSelection &,
 									const QItemSelection &)),
@@ -50,6 +55,10 @@ KeywordListDialog::KeywordListDialog(QWidget *parent)
 	vbox->addWidget(buttonRemoveUnused);
 	vbox->addWidget(buttonEditSelectedKeyword);
 	vbox->addWidget(view);
+		QHBoxLayout *hboxSearch=new QHBoxLayout;
+		hboxSearch->addWidget(new QLabel(tr("Search:")));
+		hboxSearch->addWidget(editSearch);
+	vbox->addLayout(hboxSearch);
 		QHBoxLayout *hbox=new QHBoxLayout;
 		hbox->addStretch(1);
 		hbox->addWidget(buttonPick);
@@ -70,6 +79,18 @@ KeywordListDialog::~KeywordListDialog()
 	if(!aDB->removeExtracts(_allKeywords))
 		QMessageBox::warning(this,tr("Database error"),aDB->lastError());
 }
+
+void KeywordListDialog::search(const QString &text)
+{
+	int key=aDB->search(_allKeywords,text);
+	if(key<0) return;
+
+	int index=keysForModel.indexOf(key);
+	if(index<0) return;
+
+	view->setCurrentIndex(model->index(index,0));
+}
+
 
 void KeywordListDialog::pickSelectedItem(const QModelIndex &)
 {
@@ -144,8 +165,8 @@ void KeywordListDialog::removeUnused()
 	repaintList();
 }
 
-void KeywordListDialog::changeSelection(const QItemSelection &selected,
-						  const QItemSelection &deselected)
+void KeywordListDialog::changeSelection(const QItemSelection &/*selected*/,
+						  const QItemSelection &/*deselected*/)
 {
 	buttonPick->setEnabled(view->selectionModel()->selectedIndexes().count() > 0);
 	buttonEditSelectedKeyword->setEnabled(view->selectionModel()->selectedIndexes().count() == 1);

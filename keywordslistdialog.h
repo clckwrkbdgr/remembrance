@@ -10,6 +10,7 @@ class QStringListModel;
 class QListView;
 class QItemSelection;
 class QModelIndex;
+class QLineEdit;
 
 class KeywordListDialog : public QDialog
 {
@@ -20,6 +21,8 @@ class KeywordListDialog : public QDialog
 	QList<int> keysForModel;
 	QStringListModel *model;
 	QListView *view;
+
+	QLineEdit *editSearch;
 
 	QPushButton *buttonAddKeyword,*buttonRemoveUnused, *buttonEditSelectedKeyword;
 	QPushButton *buttonPick,*buttonCancel;
@@ -32,6 +35,7 @@ private slots:
 	void addKeyword();
 	void removeUnused();
 	void editSelectedKeyword();
+	void search(const QString &text);
 public:
     KeywordListDialog(QWidget *parent=0);
     ~KeywordListDialog();

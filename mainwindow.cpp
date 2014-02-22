@@ -319,12 +319,12 @@ QSet<int> MainWindow::selectionForAll()
 	return result;
 }
 
-void MainWindow::allKeywordsDoubleClick(const QModelIndex &index)
+void MainWindow::allKeywordsDoubleClick(const QModelIndex &/*index*/)
 {
 	addKeywords();
 }
 
-void MainWindow::chosenKeywordsDoubleClick(const QModelIndex &index)
+void MainWindow::chosenKeywordsDoubleClick(const QModelIndex &/*index*/)
 {
 	removeKeywords();
 }
@@ -460,8 +460,8 @@ void MainWindow::help()
 }
 
 void MainWindow::changeSelectionForChosenKeywords(
-		const QItemSelection &selected,
-		const QItemSelection &deselected)
+		const QItemSelection &/*selected*/,
+		const QItemSelection &/*deselected*/)
 {
 	actionRemoveKeywords->setEnabled(
 			listChosenKeywords->selectionModel()->selectedIndexes().count()>0);
@@ -469,8 +469,8 @@ void MainWindow::changeSelectionForChosenKeywords(
 }
 
 void MainWindow::changeSelectionForFoundNotes(
-		const QItemSelection &selected,
-		const QItemSelection &deselected)
+		const QItemSelection &/*selected*/,
+		const QItemSelection &/*deselected*/)
 {
 	actionEditNote->setEnabled(
 			listFoundNotes->selectionModel()->selectedIndexes().count()>0);
@@ -479,8 +479,8 @@ void MainWindow::changeSelectionForFoundNotes(
 }
 
 void MainWindow::changeSelectionForAllKeywords(
-		const QItemSelection &selected,
-		const QItemSelection &deselected)
+		const QItemSelection &/*selected*/,
+		const QItemSelection &/*deselected*/)
 {
 	actionAddKeywords->setEnabled(
 			listAllKeywords->selectionModel()->selectedIndexes().count()>0);
