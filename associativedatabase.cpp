@@ -175,7 +175,7 @@ int AssociativeDatabase::search(int extractsKey,const QString &partOfWord)
 {
 	foreach(int key,_extracts[extractsKey])
 	{
-		if(_keywords[key].contains(partOfWord))
+		if(_keywords[key].contains(partOfWord, Qt::CaseInsensitive))
 			return key;
 	}
 	return -1;
