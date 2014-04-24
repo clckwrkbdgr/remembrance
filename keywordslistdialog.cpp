@@ -6,6 +6,7 @@
 #include <QtDebug>
 #include <QMessageBox>
 #include <QStringListModel>
+#include <QSortFilterProxyModel>
 
 #include "keywordslistdialog.h"
 #include <QtGui/QLabel>
@@ -18,8 +19,13 @@ KeywordListDialog::KeywordListDialog(QWidget *parent)
 
 	//controls
 	model=new QStringListModel;
+	proxyAllKeywords = new QSortFilterProxyModel;
+	proxyAllKeywords->setDynamicSortFilter(true);
+	proxyAllKeywords->sort(0);
+	proxyAllKeywords->setSourceModel(model);
+	proxyAllKeywords->setFilterCaseSensitivity(Qt::CaseInsensitive);
 	view=new QListView;
-	view->setModel(model);
+	view->setModel(proxyAllKeywords);
 	view->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	view->setEditTriggers(QListView::NoEditTriggers);
 	connect(view, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(pickSelectedItem(QModelIndex)));
@@ -82,13 +88,7 @@ KeywordListDialog::~KeywordListDialog()
 
 void KeywordListDialog::search(const QString &text)
 {
-	int key=aDB->search(_allKeywords,text);
-	if(key<0) return;
-
-	int index=keysForModel.indexOf(key);
-	if(index<0) return;
-
-	view->setCurrentIndex(model->index(index,0));
+	proxyAllKeywords->setFilterFixedString(text);
 }
 
 

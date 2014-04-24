@@ -11,6 +11,7 @@ class QListView;
 class QItemSelection;
 class QModelIndex;
 class QLineEdit;
+class QSortFilterProxyModel;
 
 class KeywordListDialog : public QDialog
 {
@@ -20,6 +21,7 @@ class KeywordListDialog : public QDialog
 
 	QList<int> keysForModel;
 	QStringListModel *model;
+	QSortFilterProxyModel *proxyAllKeywords;
 	QListView *view;
 
 	QLineEdit *editSearch;

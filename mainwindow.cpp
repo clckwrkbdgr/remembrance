@@ -57,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
 	proxyAllKeywords->setDynamicSortFilter(true);
 	proxyAllKeywords->sort(0);
 	proxyAllKeywords->setSourceModel(modelAllKeywords);
+	proxyAllKeywords->setFilterCaseSensitivity(Qt::CaseInsensitive);
 	listAllKeywords=new QListView;
 	listAllKeywords->setModel(proxyAllKeywords);
 	listAllKeywords->setSelectionMode(
@@ -138,13 +139,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::search(const QString &text)
 {
-	int key=aDB->search(_allKeywords,text);
-	if(key<0) return;
-
-	int index=keysForModelAllKeywords.indexOf(key);
-	if(index<0) return;
-
-	listAllKeywords->setCurrentIndex(proxyAllKeywords->mapFromSource(modelAllKeywords->index(index,0)));
+	proxyAllKeywords->setFilterFixedString(text);
 }
 
 MainWindow::~MainWindow()
