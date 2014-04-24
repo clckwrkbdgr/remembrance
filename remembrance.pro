@@ -6,10 +6,12 @@ CONFIG += qt release
 MOC_DIR = tmp
 OBJECTS_DIR = tmp
 RCC_DIR = tmp
+UI_DIR = tmp
 
 win32:RC_FILE = appicon.rc
 RESOURCES = icons.qrc
 TRANSLATIONS = remembrance_ru.ts
+FORMS = mainwindow.ui
 SOURCES += main.cpp \
     mainwindow.cpp \
     keywordslistdialog.cpp \

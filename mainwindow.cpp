@@ -23,6 +23,7 @@
 MainWindow::MainWindow(QWidget *parent)
 	: QMainWindow(parent)
 {
+	ui.setupUi(this);
 	_chosenKeywords=-1;
 	_allKeywords=-1;
 
@@ -35,21 +36,15 @@ MainWindow::MainWindow(QWidget *parent)
 
 	//controls
 	createActions();
-	createToolbar();
-	statusBar();
 
 	modelChosenKeywords=new QStringListModel;
-	listChosenKeywords=new QListView;
-	listChosenKeywords->setModel(modelChosenKeywords);
-	listChosenKeywords->setSelectionMode(
-			QAbstractItemView::ExtendedSelection);
-	listChosenKeywords->setEditTriggers(QListView::NoEditTriggers);
-	connect(listChosenKeywords->selectionModel(),
+	ui.listChosenKeywords->setModel(modelChosenKeywords);
+	connect(ui.listChosenKeywords->selectionModel(),
 		SIGNAL(selectionChanged(const QItemSelection &,
 								const QItemSelection &)),
 		this,SLOT(changeSelectionForChosenKeywords(const QItemSelection &,
 					  const QItemSelection &)));
-	connect(listChosenKeywords,SIGNAL(doubleClicked(const QModelIndex &)),
+	connect(ui.listChosenKeywords,SIGNAL(doubleClicked(const QModelIndex &)),
 		this,SLOT(chosenKeywordsDoubleClick(const QModelIndex &)));
 
 	modelAllKeywords=new QStringListModel;
@@ -58,17 +53,13 @@ MainWindow::MainWindow(QWidget *parent)
 	proxyAllKeywords->sort(0);
 	proxyAllKeywords->setSourceModel(modelAllKeywords);
 	proxyAllKeywords->setFilterCaseSensitivity(Qt::CaseInsensitive);
-	listAllKeywords=new QListView;
-	listAllKeywords->setModel(proxyAllKeywords);
-	listAllKeywords->setSelectionMode(
-			QAbstractItemView::ExtendedSelection);
-	listAllKeywords->setEditTriggers(QListView::NoEditTriggers);
-	connect(listAllKeywords->selectionModel(),
+	ui.listAllKeywords->setModel(proxyAllKeywords);
+	connect(ui.listAllKeywords->selectionModel(),
 		SIGNAL(selectionChanged(const QItemSelection &,
 								const QItemSelection &)),
 		this,SLOT(changeSelectionForAllKeywords(const QItemSelection &,
 					  const QItemSelection &)));
-	connect(listAllKeywords,SIGNAL(doubleClicked(const QModelIndex &)),
+	connect(ui.listAllKeywords,SIGNAL(doubleClicked(const QModelIndex &)),
 		this,SLOT(allKeywordsDoubleClick(const QModelIndex &)));
 
 	modelFoundNotes=new QStringListModel;
@@ -76,56 +67,20 @@ MainWindow::MainWindow(QWidget *parent)
 	proxyFoundNotes->setDynamicSortFilter(true);
 	proxyFoundNotes->sort(0);
 	proxyFoundNotes->setSourceModel(modelFoundNotes);
-	listFoundNotes=new QListView;
-	listFoundNotes->setModel(proxyFoundNotes);
-	listFoundNotes->setSelectionMode(
-				QAbstractItemView::SingleSelection);
-	listFoundNotes->setEditTriggers(QListView::NoEditTriggers);
-	connect(listFoundNotes->selectionModel(),
+	ui.listFoundNotes->setModel(proxyFoundNotes);
+	connect(ui.listFoundNotes->selectionModel(),
 		SIGNAL(selectionChanged(const QItemSelection &,
 								const QItemSelection &)),
 		this,SLOT(changeSelectionForFoundNotes(const QItemSelection &,
 					  const QItemSelection &)));
-	connect(listFoundNotes,SIGNAL(doubleClicked(const QModelIndex &)),
+	connect(ui.listFoundNotes,SIGNAL(doubleClicked(const QModelIndex &)),
 		this,SLOT(noteDoubleClick(const QModelIndex &)));
 
-	buttonAddKeywords=new QToolButton;
-	buttonAddKeywords->setDefaultAction(actionAddKeywords);
-	buttonRemoveKeywords=new QToolButton;
-	buttonRemoveKeywords->setDefaultAction(actionRemoveKeywords);
+	ui.buttonAddKeywords->setDefaultAction(ui.actionAddKeywords);
+	ui.buttonRemoveKeywords->setDefaultAction(ui.actionRemoveKeywords);
 
-	editSearch=new QLineEdit;
-	connect(editSearch,SIGNAL(textChanged(const QString&)),
+	connect(ui.editSearch,SIGNAL(textChanged(const QString&)),
 			this,SLOT(search(const QString&)));
-
-	//layout
-	QWidget *widget=new QWidget;
-	QVBoxLayout *vbox=new QVBoxLayout;
-		QHBoxLayout *hbox=new QHBoxLayout;
-			QVBoxLayout *vboxAllKeywords=new QVBoxLayout;
-			vboxAllKeywords->addWidget(new QLabel(tr("All words:")));
-			vboxAllKeywords->addWidget(listAllKeywords);
-				QHBoxLayout *hboxSearch=new QHBoxLayout;
-				hboxSearch->addWidget(new QLabel(tr("Search:")));
-				hboxSearch->addWidget(editSearch);
-			vboxAllKeywords->addLayout(hboxSearch);
-		hbox->addLayout(vboxAllKeywords);
-			QVBoxLayout *vboxButtons=new QVBoxLayout;
-			vboxButtons->addStretch(1);
-			vboxButtons->addWidget(buttonAddKeywords);
-			vboxButtons->addWidget(buttonRemoveKeywords);
-			vboxButtons->addStretch(1);
-		hbox->addLayout(vboxButtons);
-			QVBoxLayout *vboxChosenKeywords=new QVBoxLayout;
-			vboxChosenKeywords->addWidget(new QLabel(tr("Chosen words:")));
-			vboxChosenKeywords->addWidget(listChosenKeywords);
-		hbox->addLayout(vboxChosenKeywords);
-	vbox->addLayout(hbox);
-	vbox->addWidget(new QLabel(tr("Found notes:")));
-	vbox->addWidget(listFoundNotes);
-
-	widget->setLayout(vbox);
-	setCentralWidget(widget);
 
 	//base
 	if(!aDB->load("database"))
@@ -163,76 +118,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::createActions()
 {
-	actionExit=new QAction(QIcon(":/icons/app"),tr("Exit"),this);
-	actionExit->setShortcut(tr("Ctrl+Q","action-quit"));
-	actionExit->setStatusTip(tr("Exits the application"));
-	actionExit->setToolTip(tr("This will be exit the application"));
-	connect(actionExit,SIGNAL(triggered()), qApp,SLOT(quit()));
+	connect(ui.actionExit,SIGNAL(triggered()), qApp,SLOT(quit()));
 
-	actionAddKeywords=new QAction(QIcon(":/icons/buttonaddkeywords"),
-								  tr("Add words"),this);
-	actionAddKeywords->setShortcut(tr("Plus","action-add words"));
-	actionAddKeywords->setStatusTip(tr("Add more words to current filter"));
-	actionAddKeywords->setToolTip(tr("Add words to current filter and redo "
-								  "search"));
-	actionAddKeywords->setEnabled(false);
-	connect(actionAddKeywords,SIGNAL(triggered()), this,SLOT(addKeywords()));
+	ui.actionAddKeywords->setStatusTip(tr("Add more words to current filter"));
+	ui.actionAddKeywords->setEnabled(false);
+	connect(ui.actionAddKeywords,SIGNAL(triggered()), this,SLOT(addKeywords()));
 
-	actionRemoveKeywords=new QAction(QIcon(":/icons/buttonremovekeywords"),
-									 tr("Delete words"),this);
-	actionRemoveKeywords->setShortcut(tr("Minus","action-remove words"));
-	actionRemoveKeywords->setStatusTip(tr("Remove selected words from filter"));
-	actionRemoveKeywords->setToolTip(tr("Remove selected words from filter and"
-									 " redo search"));
-	actionRemoveKeywords->setEnabled(false);
-	connect(actionRemoveKeywords,SIGNAL(triggered()),
+	ui.actionRemoveKeywords->setStatusTip(tr("Remove selected words from filter"));
+	ui.actionRemoveKeywords->setEnabled(false);
+	connect(ui.actionRemoveKeywords,SIGNAL(triggered()),
 			this,SLOT(removeKeywords()));
 
-	actionAddNote=new QAction(QIcon(":/icons/addnote"),tr("Add note"),this);
-	actionAddNote->setShortcut(tr("Ctrl+N","action-add note"));
-	actionAddNote->setStatusTip(tr("Add new note"));
-	actionAddNote->setToolTip(tr("Add new note and associate it with "
-								 "keywords"));
-	connect(actionAddNote,SIGNAL(triggered()), this,SLOT(addNote()));
+	connect(ui.actionAddNote,SIGNAL(triggered()), this,SLOT(addNote()));
 
-	actionEditNote=new QAction(QIcon(":/icons/editnote"),tr("Edit note"),this);
-	actionEditNote->setShortcut(tr("Enter","action-edit note"));
-	actionEditNote->setStatusTip(tr("Edit selected note"));
-	actionEditNote->setToolTip(tr("Edit note that selected in the list of "
-								  "found notes"));
-	actionEditNote->setEnabled(false);
-	connect(actionEditNote,SIGNAL(triggered()), this,SLOT(editNote()));
+	connect(ui.actionEditNote,SIGNAL(triggered()), this,SLOT(editNote()));
 
-	actionRemoveNote=new QAction(QIcon(":/icons/removenote"),tr("Remove note"),
-								 this);
-	actionRemoveNote->setShortcut(tr("Del","action-remove note"));
-	actionRemoveNote->setStatusTip(tr("Remove selected note"));
-	actionRemoveNote->setToolTip(tr("Remove selected note and all its keywords "
-									"associations"));
-	actionRemoveNote->setEnabled(false);
-	connect(actionRemoveNote,SIGNAL(triggered()), this,SLOT(removeNote()));
+	connect(ui.actionRemoveNote,SIGNAL(triggered()), this,SLOT(removeNote()));
 
-	actionHelp=new QAction(QIcon(":/icons/help"),tr("Help"),this);
-	actionHelp->setShortcut(tr("F1","action-help"));
-	actionHelp->setStatusTip(tr("Show small help info"));
-	actionHelp->setToolTip(tr("Show small help info"));
-	connect(actionHelp,SIGNAL(triggered()), this,SLOT(help()));
-}
-
-void MainWindow::createToolbar()
-{
-	QToolBar *mainBar=addToolBar(tr("Main"));
-	mainBar->setMovable(false);
-	mainBar->setFloatable(false);
-	mainBar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-
-	mainBar->addAction(actionExit);
-	mainBar->addSeparator();
-	mainBar->addAction(actionAddNote);
-	mainBar->addAction(actionEditNote);
-	mainBar->addAction(actionRemoveNote);
-	mainBar->addSeparator();
-	mainBar->addAction(actionHelp);
+	connect(ui.actionHelp,SIGNAL(triggered()), this,SLOT(help()));
 }
 
 void MainWindow::repaintList()
@@ -288,7 +191,7 @@ void MainWindow::repaintList()
 
 QSet<int> MainWindow::selectionForChosen()
 {
-	QModelIndexList list=listChosenKeywords->selectionModel()->
+	QModelIndexList list=ui.listChosenKeywords->selectionModel()->
 						 selectedIndexes();
 
 	QSet<int> result;
@@ -300,7 +203,7 @@ QSet<int> MainWindow::selectionForChosen()
 
 QSet<int> MainWindow::selectionForAll()
 {
-	QModelIndexList sourceList=listAllKeywords->selectionModel()->
+	QModelIndexList sourceList=ui.listAllKeywords->selectionModel()->
 						 selectedIndexes();
 	QModelIndexList list;
 	foreach(const QModelIndex & index, sourceList) {
@@ -355,7 +258,7 @@ void MainWindow::noteDoubleClick(const QModelIndex &index)
 	//repaint
 	int lastIndex=proxyFoundNotes->mapToSource(index).row();
 	repaintList();
-	listFoundNotes->setCurrentIndex(proxyFoundNotes->mapFromSource(modelFoundNotes->index(lastIndex,0)));
+	ui.listFoundNotes->setCurrentIndex(proxyFoundNotes->mapFromSource(modelFoundNotes->index(lastIndex,0)));
 }
 
 void MainWindow::addKeywords()
@@ -405,14 +308,14 @@ void MainWindow::removeKeywords()
 
 void MainWindow::editNote()
 {
-	noteDoubleClick(proxyFoundNotes->mapToSource(listFoundNotes->currentIndex()));
+	noteDoubleClick(proxyFoundNotes->mapToSource(ui.listFoundNotes->currentIndex()));
 }
 
 void MainWindow::removeNote()
 {
 	//get selected note
 	int selectedNote=keysForModelFoundNotes.value(
-			proxyFoundNotes->mapToSource(listFoundNotes->currentIndex()).row());
+			proxyFoundNotes->mapToSource(ui.listFoundNotes->currentIndex()).row());
 
 	//dialog
 	if(QMessageBox::question(this,tr("Note removing"),tr("Are you sure want to "
@@ -425,9 +328,9 @@ void MainWindow::removeNote()
 	}
 
 	//repaint
-	int lastIndex=proxyFoundNotes->mapToSource(listFoundNotes->currentIndex()).row();
+	int lastIndex=proxyFoundNotes->mapToSource(ui.listFoundNotes->currentIndex()).row();
 	repaintList();
-	listFoundNotes->setCurrentIndex(proxyFoundNotes->mapFromSource(modelFoundNotes->index(lastIndex,0)));
+	ui.listFoundNotes->setCurrentIndex(proxyFoundNotes->mapFromSource(modelFoundNotes->index(lastIndex,0)));
 }
 
 void MainWindow::addNote()
@@ -458,27 +361,27 @@ void MainWindow::changeSelectionForChosenKeywords(
 		const QItemSelection &/*selected*/,
 		const QItemSelection &/*deselected*/)
 {
-	actionRemoveKeywords->setEnabled(
-			listChosenKeywords->selectionModel()->selectedIndexes().count()>0);
-	listAllKeywords->selectionModel()->clear();
+	ui.actionRemoveKeywords->setEnabled(
+			ui.listChosenKeywords->selectionModel()->selectedIndexes().count()>0);
+	ui.listAllKeywords->selectionModel()->clear();
 }
 
 void MainWindow::changeSelectionForFoundNotes(
 		const QItemSelection &/*selected*/,
 		const QItemSelection &/*deselected*/)
 {
-	actionEditNote->setEnabled(
-			listFoundNotes->selectionModel()->selectedIndexes().count()>0);
-	actionRemoveNote->setEnabled(
-			listFoundNotes->selectionModel()->selectedIndexes().count()>0);
+	ui.actionEditNote->setEnabled(
+			ui.listFoundNotes->selectionModel()->selectedIndexes().count()>0);
+	ui.actionRemoveNote->setEnabled(
+			ui.listFoundNotes->selectionModel()->selectedIndexes().count()>0);
 }
 
 void MainWindow::changeSelectionForAllKeywords(
 		const QItemSelection &/*selected*/,
 		const QItemSelection &/*deselected*/)
 {
-	actionAddKeywords->setEnabled(
-			listAllKeywords->selectionModel()->selectedIndexes().count()>0);
-	listChosenKeywords->selectionModel()->clear();
+	ui.actionAddKeywords->setEnabled(
+			ui.listAllKeywords->selectionModel()->selectedIndexes().count()>0);
+	ui.listChosenKeywords->selectionModel()->clear();
 }
 

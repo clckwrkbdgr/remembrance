@@ -6,36 +6,26 @@
 #include <QSet>
 
 #include "associativedatabase.h"
+#include "ui_mainwindow.h"
 
 class QStringListModel;
 class QSortFilterProxyModel;
-class QListView;
 class QItemSelection;
 class QModelIndex;
-class QToolButton;
-class QLineEdit;
 
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
+	Ui::MainWindow ui;
 
 	int _chosenKeywords,_allKeywords;
-
-	QAction *actionExit,*actionAddKeywords,*actionRemoveKeywords,
-		*actionAddNote,*actionEditNote,*actionRemoveNote,*actionHelp;
-
-	QToolButton *buttonAddKeywords,*buttonRemoveKeywords;
 
 	QList<int> keysForModelChosenKeywords,keysForModelFoundNotes,
 		keysForModelAllKeywords;
 	QStringListModel *modelChosenKeywords,*modelFoundNotes,*modelAllKeywords;
 	QSortFilterProxyModel *proxyChosenKeywords,*proxyFoundNotes,*proxyAllKeywords;
-	QListView *listChosenKeywords,*listFoundNotes,*listAllKeywords;
-
-	QLineEdit *editSearch;
 
 	void createActions();
-	void createToolbar();
 
 	void repaintList();
 	QSet<int> selectionForChosen();
