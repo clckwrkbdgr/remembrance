@@ -122,8 +122,9 @@ QSet<int> KeywordListDialog::selection()
 	QModelIndexList list=view->selectionModel()->selectedIndexes();
 
 	QSet<int> result;
-	foreach(QModelIndex index,list)
-		result<<keysForModel.value(index.row());
+	foreach(QModelIndex index, list) {
+		result << keysForModel.value(proxyAllKeywords->mapToSource(index).row());
+	}
 
 	return result;
 }
