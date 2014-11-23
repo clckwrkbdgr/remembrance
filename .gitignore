@@ -2,7 +2,9 @@
 *.swp
 
 # Build
-Makefile
+Makefile*
 remembrance
+debug/
+release/
 tmp/
 
